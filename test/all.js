@@ -186,30 +186,4 @@ contract('BloccWarz', accounts => {
         .rejectedWith('Returned error: VM Exception while processing transaction: revert')
     })
   })
-
-  describe('joinGame', () => {
-    it('expects player to spawn correctly', async () => {
-      // Move to period 1
-      const periodLength = await bloccWarz.periodLength()
-      await moveForwardSecs(periodLength.toNumber())
-      // join game
-      const tx = await bloccWarz.joinGame({ from: user1.address })
-      // check initial player data
-      const player = await bloccWarz.players(user1.address)
-
-      assert.equal(player.periodSpawned.toNumber(), 1)
-      assert.equal(player.periodLastPlayed.toNumber(), 0)
-      assert.equal(player.periodsPlayedTotal.toNumber(), 0)
-      assert.isTrue(player.food.eq(await bloccWarz.initFood()))
-      assert.isTrue(player.medicine.eq(await bloccWarz.initMedicine()))
-      assert.isTrue(player.ore.eq(await bloccWarz.initOre()))
-      assert.isTrue(player.population.eq(await bloccWarz.initPopulation()))
-      assert.isTrue(player.army.eq(await bloccWarz.initArmy()))
-
-      // check logs
-      const playerSpawnedPayload = getEventParams(tx, 'PlayerSpawned')
-
-      assert.equal(playerSpawnedPayload.account, user1.address)
-    })
-  })
 })
